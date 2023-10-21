@@ -1,12 +1,18 @@
 import 'package:demo/core/data/config/app_config.dart';
+import 'package:demo/core/data/config/log_config.dart';
 import 'package:demo/core/di/di.dart';
 import 'package:demo/core/presentation/widgets/flavor_banner_widget.dart';
+import 'package:demo/core/utils/logger.dart';
 import 'package:flutter/material.dart';
 
 Future<void> runAppCommon(Flavor flavor) async {
   WidgetsFlutterBinding.ensureInitialized();
   setupDependencies(flavor);
   final AppConfig appConfig = locator();
+  if (appConfig.enableLogging) {
+    setupLogging();
+  }
+  logger.i("Finished initialization");
   runApp(const MyApp());
 }
 
