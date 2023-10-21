@@ -4,11 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class FlavorBanner extends StatelessWidget {
+  const FlavorBanner(
+      {super.key, required this.bannerColor, required this.child});
+
   final Color bannerColor;
   final Widget child;
-
-  const FlavorBanner({Key? key, required this.bannerColor, required this.child})
-      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

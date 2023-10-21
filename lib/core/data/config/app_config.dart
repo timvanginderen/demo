@@ -13,7 +13,7 @@ abstract class AppConfig {
 
 abstract class _BaseAppConfig implements AppConfig {}
 
-@LazySingleton(as: AppConfig, env: ["dev"])
+@LazySingleton(as: AppConfig, env: <String>['dev'])
 class DevAppConfig extends _BaseAppConfig {
   @override
   Flavor get flavor => Flavor.dev;
@@ -25,7 +25,7 @@ class DevAppConfig extends _BaseAppConfig {
   bool get enableLogging => true;
 }
 
-@LazySingleton(as: AppConfig, env: ["qa"])
+@LazySingleton(as: AppConfig, env: <String>['qa'])
 class QaAppConfig extends _BaseAppConfig {
   @override
   Flavor get flavor => Flavor.qa;
@@ -37,7 +37,7 @@ class QaAppConfig extends _BaseAppConfig {
   bool get enableLogging => true;
 }
 
-@LazySingleton(as: AppConfig, env: ["prod"])
+@LazySingleton(as: AppConfig, env: <String>['prod'])
 class ProdAppConfig extends _BaseAppConfig {
   @override
   Flavor get flavor => Flavor.prod;

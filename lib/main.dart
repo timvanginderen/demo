@@ -12,7 +12,7 @@ Future<void> runAppCommon(Flavor flavor) async {
   if (appConfig.enableLogging) {
     setupLogging();
   }
-  logger.i("Finished initialization");
+  logger.i('Finished initialization');
   runApp(const MyApp());
 }
 

@@ -1,8 +1,8 @@
+import 'package:demo/core/data/config/app_config.dart';
 import 'package:demo/core/di/di.config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
-import 'package:demo/core/data/config/app_config.dart';
 
 T locator<T extends Object>({dynamic param1, dynamic param2}) {
   try {
@@ -16,6 +16,6 @@ T locator<T extends Object>({dynamic param1, dynamic param2}) {
 
 @injectableInit
 void setupDependencies(Flavor flavor) {
-  GetIt getIt = GetIt.instance;
+  final GetIt getIt = GetIt.instance;
   getIt.init(environment: describeEnum(flavor));
 }

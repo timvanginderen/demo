@@ -1,13 +1,13 @@
+import 'package:demo/core/utils/logger.dart';
 import 'package:f_logs/f_logs.dart';
 import 'package:flutter/foundation.dart';
-import 'package:demo/core/utils/logger.dart';
 
 void setupLogging({bool isInTestFolder = false}) {
   Logger.enable(isInTestFolder: isInTestFolder);
   if (!isInTestFolder) {
-    LogsConfig config = FLog.getDefaultConfigurations()
+    final LogsConfig config = FLog.getDefaultConfigurations()
       ..formatType = FormatType.FORMAT_CUSTOM
-      ..fieldOrderFormatCustom = [
+      ..fieldOrderFormatCustom = <FieldName>[
         FieldName.LOG_LEVEL,
         FieldName.TIMESTAMP,
         FieldName.CLASSNAME,
@@ -16,15 +16,15 @@ void setupLogging({bool isInTestFolder = false}) {
         FieldName.EXCEPTION,
         FieldName.STACKTRACE,
       ]
-      ..logLevelsEnabled = [
+      ..logLevelsEnabled = <LogLevel>[
         LogLevel.INFO,
         LogLevel.ERROR,
         LogLevel.WARNING,
         if (kDebugMode) LogLevel.DEBUG
       ]
-      ..customClosingDivider = " "
-      ..customOpeningDivider = " "
-      ..dataLogTypes = [
+      ..customClosingDivider = ' '
+      ..customOpeningDivider = ' '
+      ..dataLogTypes = <String>[
         DataLogType.DEVICE.toString(),
         DataLogType.NETWORK.toString(),
       ]
