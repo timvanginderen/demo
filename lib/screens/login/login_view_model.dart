@@ -12,6 +12,7 @@ final AutoDisposeChangeNotifierProvider<LoginViewModel> loginViewModelProvider =
 
 abstract class LoginViewModel extends ViewModel {
   Future<void> initState();
+  Future<void> goToOrderScreen();
 }
 
 @Injectable(as: LoginViewModel)
@@ -22,4 +23,7 @@ class LoginViewModelImpl extends BaseViewModel implements LoginViewModel {
 
   @override
   Future<void> initState() async {}
+
+  @override
+  Future<void> goToOrderScreen() => navigationService.goToOrderScreen();
 }

@@ -6,11 +6,13 @@ abstract class NavigationService {
 
   static const String routeHome = 'home_screen';
   static const String routeLogin = 'login_screen';
+  static const String routeOrder = 'order_screen';
 
   void goBack([dynamic result]);
 
   Future<void> goToHomeScreen();
   Future<void> goToLoginScreen();
+  Future<void> goToOrderScreen();
 }
 
 @LazySingleton(as: NavigationService)
@@ -34,5 +36,11 @@ class NavigationServiceImpl implements NavigationService {
   Future<void> goToLoginScreen() {
     return navigatorKey.currentState!
         .pushReplacementNamed(NavigationService.routeLogin);
+  }
+
+  @override
+  Future<void> goToOrderScreen() {
+    return navigatorKey.currentState!
+        .pushReplacementNamed(NavigationService.routeOrder);
   }
 }

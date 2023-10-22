@@ -55,6 +55,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               SecondaryButton(
                                 onPressed: () {
                                   logger.i('enterprise button pressed');
+                                  loginViewModel.goToOrderScreen();
                                 },
                                 text: 'Proceedix Enterprise',
                                 primaryIcon: Icons.cloud,
@@ -65,6 +66,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   text: 'Log in',
                                   onPressed: () {
                                     logger.i('log in button pressed');
+                                    loginViewModel.goToOrderScreen();
                                   },
                                   primaryIcon: Icons.person_2_rounded),
                             ],
