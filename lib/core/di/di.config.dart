@@ -13,6 +13,7 @@ import 'package:demo/core/presentation/navigation/navigation_service.dart'
     as _i5;
 import 'package:demo/screens/app/app_view_model.dart' as _i4;
 import 'package:demo/screens/home/home_view_model.dart' as _i7;
+import 'package:demo/screens/login/login_view_model.dart' as _i8;
 import 'package:demo/screens/splash/splash_view_model.dart' as _i6;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
@@ -51,6 +52,8 @@ extension GetItInjectableX on _i1.GetIt {
         () => _i6.SplashViewModelImpl(gh<_i5.NavigationService>()));
     gh.factory<_i7.HomeViewModel>(
         () => _i7.HomeViewModelImpl(gh<_i5.NavigationService>()));
+    gh.factory<_i8.LoginViewModel>(
+        () => _i8.LoginViewModelImpl(gh<_i5.NavigationService>()));
     return this;
   }
 }
