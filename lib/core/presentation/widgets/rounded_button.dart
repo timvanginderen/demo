@@ -37,13 +37,13 @@ class RoundedButton extends StatelessWidget {
           Icon(
             primaryIcon,
             color: foregroundColor,
-            // size: 30.0,
+            size: 20.0,
           ),
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: Text(
               text,
-              style: const TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 20),
             ),
           ),
           const Spacer(),

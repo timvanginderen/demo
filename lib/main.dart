@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
           },
           title: 'Proceedix Demo',
           theme: ThemeData(
+            fontFamily: 'Lato',
             primarySwatch: Colors.blue,
           ),
           home: FlavorBanner(
