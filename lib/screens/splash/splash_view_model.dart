@@ -28,6 +28,7 @@ class SplashViewModelImpl extends BaseViewModel implements SplashViewModel {
     final int timeBeforeSetup = DateTime.now().millisecond;
 
     // do setup work
+    const bool isLoggedIn = false;
 
     // delay navigation to home screen
     final int timedPassed = DateTime.now().millisecond - timeBeforeSetup;
@@ -36,8 +37,13 @@ class SplashViewModelImpl extends BaseViewModel implements SplashViewModel {
       await Future<dynamic>.delayed(Duration(milliseconds: delay));
     }
 
-    // go to home screen
-    logger.i('setup done, go to home screen');
-    await _navigationService.goToHomeScreen();
+    logger.i('setup done');
+    if (isLoggedIn) {
+      logger.i('user is logged in, go to home screen');
+      await _navigationService.goToHomeScreen();
+    } else {
+      logger.i('user is not logged in, go to login screen');
+      await _navigationService.goToLoginScreen();
+    }
   }
 }
