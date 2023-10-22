@@ -5,6 +5,7 @@ import 'package:demo/core/presentation/theme/theme_build_context_extension.dart'
 import 'package:demo/core/presentation/widgets/flavor_banner_widget.dart';
 import 'package:demo/core/utils/logger.dart';
 import 'package:demo/screens/app/app_view_model.dart';
+import 'package:demo/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
           ),
           home: FlavorBanner(
             bannerColor: context.colors.flavorBanner,
-            child: const MyHomePage(title: 'Flutter Demo Home Page'),
+            child: const SplashScreen(),
           ),
         );
       }),
