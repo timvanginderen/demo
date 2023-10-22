@@ -1,6 +1,8 @@
 import 'package:demo/screens/order/order_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:intl_phone_field/phone_number.dart';
 
 class OrderScreen extends ConsumerStatefulWidget {
   const OrderScreen({super.key});
@@ -70,42 +72,64 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                 decoration:
                                     const InputDecoration(labelText: 'Name'),
                                 validator: orderViewModel.validateName,
+                                onChanged: (String value) =>
+                                    orderViewModel.setName(value),
                               ),
                               TextFormField(
                                 decoration: const InputDecoration(
                                     labelText: 'Email Address'),
                                 validator: orderViewModel.validateEmail,
                                 keyboardType: TextInputType.emailAddress,
+                                onChanged: (String value) =>
+                                    orderViewModel.setEmail(value),
                               ),
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                    labelText: 'Phone number'),
-                                validator: orderViewModel.validatePhoneNumber,
-                                keyboardType: TextInputType.phone,
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16.0),
+                                child: IntlPhoneField(
+                                  decoration: const InputDecoration(
+                                    labelText: 'Phone Number',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  onChanged: (PhoneNumber phone) {
+                                    orderViewModel
+                                        .setPhoneNumber(phone.completeNumber);
+                                  },
+                                  initialCountryCode: 'BE',
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        isActive: orderViewModel.currentStep >= 0,
-                        state: orderViewModel.currentStep >= 0
+                        isActive: orderViewModel.currentStep == 0,
+                        state: orderViewModel.currentStep >= 1
                             ? StepState.complete
-                            : StepState.disabled,
+                            : StepState.indexed,
                       ),
                       Step(
                         title: const Text('Pricing'),
-                        content: const Column(),
-                        isActive: orderViewModel.currentStep >= 0,
-                        state: orderViewModel.currentStep >= 1
+                        content: Form(
+                          key: _formKeys[1],
+                          child: const Column(),
+                        ),
+                        isActive: orderViewModel.currentStep == 1,
+                        state: orderViewModel.currentStep >= 2
                             ? StepState.complete
-                            : StepState.disabled,
+                            : StepState.indexed,
                       ),
                       Step(
                         title: const Text('Summary'),
-                        content: const Column(),
-                        isActive: orderViewModel.currentStep >= 0,
-                        state: orderViewModel.currentStep >= 2
+                        content: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text('Name: ${orderViewModel.name}' ?? ''),
+                            Text(
+                                'Email address: ${orderViewModel.email}' ?? ''),
+                          ],
+                        ),
+                        isActive: orderViewModel.currentStep == 2,
+                        state: orderViewModel.currentStep >= 3
                             ? StepState.complete
-                            : StepState.disabled,
+                            : StepState.indexed,
                       ),
                     ],
                   ),

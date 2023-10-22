@@ -26,6 +26,18 @@ abstract class OrderViewModel extends ViewModel {
   String? validateEmail(String? email);
 
   String? validatePhoneNumber(String? phoneNumber);
+
+  void setName(String name);
+
+  void setEmail(String email);
+
+  void setPhoneNumber(String phoneNumber);
+
+  String? get name;
+
+  String? get email;
+
+  String? get phoneNumber;
 }
 
 @Injectable(as: OrderViewModel)
@@ -37,6 +49,15 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
 
   @override
   Future<void> initState() async {}
+
+  @override
+  String? email;
+
+  @override
+  String? name;
+
+  @override
+  String? phoneNumber;
 
   @override
   int get currentStep => _currentStep;
@@ -98,5 +119,20 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
       return 'Phone number cannot be empty';
     }
     return null;
+  }
+
+  @override
+  void setName(String name) {
+    this.name = name;
+  }
+
+  @override
+  void setEmail(String email) {
+    this.email = email;
+  }
+
+  @override
+  void setPhoneNumber(String phoneNumber) {
+    this.phoneNumber = phoneNumber;
   }
 }
