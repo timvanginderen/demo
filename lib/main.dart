@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
               pageBuilder: (BuildContext ctx, _, __) => builder!(ctx),
             );
           },
-          title: 'Flutter Demo',
+          title: 'Proceedix Demo',
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
