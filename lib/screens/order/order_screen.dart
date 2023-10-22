@@ -10,6 +10,12 @@ class OrderScreen extends ConsumerStatefulWidget {
 }
 
 class _OrderScreenState extends ConsumerState<OrderScreen> {
+  final List<GlobalKey<FormState>> _formKeys = <GlobalKey<FormState>>[
+    GlobalKey<FormState>(),
+    GlobalKey<FormState>(),
+    GlobalKey<FormState>(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -26,8 +32,16 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                     physics: const ScrollPhysics(),
                     currentStep: orderViewModel.currentStep,
                     onStepTapped: (int step) => orderViewModel.tapped(step),
-                    onStepContinue: orderViewModel.continued,
-                    onStepCancel: orderViewModel.cancelled,
+                    onStepContinue: () {
+                      setState(() {
+                        if (_formKeys[orderViewModel.currentStep]
+                            .currentState!
+                            .validate()) {
+                          orderViewModel.onStepContinue();
+                        }
+                      });
+                    },
+                    onStepCancel: orderViewModel.onStepCancel,
                     controlsBuilder:
                         (BuildContext context, ControlsDetails details) {
                       return Row(
@@ -48,21 +62,29 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                     steps: <Step>[
                       Step(
                         title: const Text('Details'),
-                        content: Column(
-                          children: <Widget>[
-                            TextFormField(
-                              decoration:
-                                  const InputDecoration(labelText: 'Name'),
-                            ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                  labelText: 'Email Address'),
-                            ),
-                            TextFormField(
-                              decoration: const InputDecoration(
-                                  labelText: 'Phone number'),
-                            ),
-                          ],
+                        content: Form(
+                          key: _formKeys[0],
+                          child: Column(
+                            children: <Widget>[
+                              TextFormField(
+                                decoration:
+                                    const InputDecoration(labelText: 'Name'),
+                                validator: orderViewModel.validateName,
+                              ),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                    labelText: 'Email Address'),
+                                validator: orderViewModel.validateEmail,
+                                keyboardType: TextInputType.emailAddress,
+                              ),
+                              TextFormField(
+                                decoration: const InputDecoration(
+                                    labelText: 'Phone number'),
+                                validator: orderViewModel.validatePhoneNumber,
+                                keyboardType: TextInputType.phone,
+                              ),
+                            ],
+                          ),
                         ),
                         isActive: orderViewModel.currentStep >= 0,
                         state: orderViewModel.currentStep >= 0
