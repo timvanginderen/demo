@@ -1,6 +1,7 @@
 import 'package:demo/core/data/config/app_config.dart';
 import 'package:demo/core/data/config/log_config.dart';
 import 'package:demo/core/di/di.dart';
+import 'package:demo/core/presentation/theme/theme_build_context_extension.dart';
 import 'package:demo/core/presentation/widgets/flavor_banner_widget.dart';
 import 'package:demo/core/utils/logger.dart';
 import 'package:demo/screens/app/app_view_model.dart';
@@ -32,9 +33,9 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: const FlavorBanner(
-            bannerColor: Colors.green,
-            child: MyHomePage(title: 'Flutter Demo Home Page'),
+          home: FlavorBanner(
+            bannerColor: context.colors.flavorBanner,
+            child: const MyHomePage(title: 'Flutter Demo Home Page'),
           ),
         );
       }),
