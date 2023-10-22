@@ -3,7 +3,9 @@ import 'package:demo/core/data/config/log_config.dart';
 import 'package:demo/core/di/di.dart';
 import 'package:demo/core/presentation/widgets/flavor_banner_widget.dart';
 import 'package:demo/core/utils/logger.dart';
+import 'package:demo/screens/app/app_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Future<void> runAppCommon(Flavor flavor) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,15 +23,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const FlavorBanner(
-          bannerColor: Colors.green,
-          child: MyHomePage(title: 'Flutter Demo Home Page')),
+    return ProviderScope(
+      child: Consumer(builder: (BuildContext context, WidgetRef ref, _) {
+        final AppViewModel viewModel = ref.watch(appViewModelProvider);
+        final AppConfig config = viewModel.appConfig;
+        return MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: const FlavorBanner(
+            bannerColor: Colors.green,
+            child: MyHomePage(title: 'Flutter Demo Home Page'),
+          ),
+        );
+      }),
     );
   }
 }
