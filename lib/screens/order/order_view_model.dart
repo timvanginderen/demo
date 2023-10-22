@@ -1,6 +1,7 @@
 import 'package:demo/core/di/di.dart';
 import 'package:demo/core/presentation/navigation/navigation_service.dart';
 import 'package:demo/core/presentation/view_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:injectable/injectable.dart';
 
@@ -15,7 +16,7 @@ abstract class OrderViewModel extends ViewModel {
 
   int get currentStep;
 
-  void onStepContinue();
+  void onStepContinue(GlobalKey<FormState>? formKey);
 
   void onStepCancel();
 
@@ -25,7 +26,7 @@ abstract class OrderViewModel extends ViewModel {
 
   String? validateEmail(String? email);
 
-  String? validatePhoneNumber(String? phoneNumber);
+  // String? validatePhoneNumber(String? phoneNumber);
 
   void setName(String name);
 
@@ -39,7 +40,13 @@ abstract class OrderViewModel extends ViewModel {
 
   String? get phoneNumber;
 
+  bool get isStepOneCompleted;
+
+  bool get isStepTwoCompleted;
+
   bool get isFormCompleted;
+
+  bool get isOrderSubmitted;
 }
 
 @Injectable(as: OrderViewModel)
@@ -48,7 +55,6 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
 
   final NavigationService navigationService;
   int _currentStep = 0;
-  bool _isFormCompleted = false;
 
   @override
   Future<void> initState() async {}
@@ -66,11 +72,30 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
   int get currentStep => _currentStep;
 
   @override
-  bool get isFormCompleted => _isFormCompleted;
+  bool get isFormCompleted => isStepOneCompleted && isStepTwoCompleted;
 
   @override
-  void onStepContinue() {
-    _currentStep < 2 ? _currentStep += 1 : finishForm();
+  bool isStepOneCompleted = false;
+
+  @override
+  bool isStepTwoCompleted = false;
+
+  @override
+  bool isOrderSubmitted = false;
+
+  @override
+  void onStepContinue(GlobalKey<FormState>? formKey) {
+    if (formKey == null && isFormCompleted) {
+      submitOrder();
+    } else if (formKey != null && formKey.currentState!.validate()) {
+      switch (currentStep) {
+        case 0:
+          isStepOneCompleted = true;
+        case 1:
+          isStepTwoCompleted = true;
+      }
+      _currentStep += 1;
+    }
     notifyListeners();
   }
 
@@ -88,8 +113,8 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
     notifyListeners();
   }
 
-  void finishForm() {
-    _isFormCompleted = true;
+  void submitOrder() {
+    isOrderSubmitted = true;
   }
 
   @override
@@ -121,13 +146,13 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
     return null;
   }
 
-  @override
-  String? validatePhoneNumber(String? phoneNumber) {
-    if (phoneNumber == null || phoneNumber.isEmpty) {
-      return 'Phone number cannot be empty';
-    }
-    return null;
-  }
+  // @override
+  // String? validatePhoneNumber(String? phoneNumber) {
+  //   if (phoneNumber == null || phoneNumber.isEmpty) {
+  //     return 'Phone number cannot be empty';
+  //   }
+  //   return null;
+  // }
 
   @override
   void setName(String name) {

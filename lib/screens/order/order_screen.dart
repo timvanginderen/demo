@@ -15,7 +15,6 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
   final List<GlobalKey<FormState>> _formKeys = <GlobalKey<FormState>>[
     GlobalKey<FormState>(),
     GlobalKey<FormState>(),
-    GlobalKey<FormState>(),
   ];
 
   @override
@@ -28,38 +27,45 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
           body: Container(
             child: Column(
               children: <Widget>[
-                if (!orderViewModel.isFormCompleted)
-                  Expanded(
+                Expanded(
+                  child: AbsorbPointer(
+                    absorbing: orderViewModel.isOrderSubmitted,
                     child: Stepper(
                       type: StepperType.horizontal,
                       physics: const ScrollPhysics(),
                       currentStep: orderViewModel.currentStep,
                       onStepTapped: (int step) => orderViewModel.tapped(step),
                       onStepContinue: () {
-                        setState(() {
-                          if (orderViewModel.currentStep == 2 ||
-                              _formKeys[orderViewModel.currentStep]
-                                  .currentState!
-                                  .validate()) {
-                            orderViewModel.onStepContinue();
-                          }
-                        });
+                        GlobalKey<FormState>? formKey;
+                        if (orderViewModel.currentStep < 2) {
+                          formKey = _formKeys[orderViewModel.currentStep];
+                        }
+                        orderViewModel.onStepContinue(formKey);
                       },
                       onStepCancel: orderViewModel.onStepCancel,
                       controlsBuilder:
                           (BuildContext context, ControlsDetails details) {
                         return Row(
                           children: <Widget>[
-                            if (orderViewModel.currentStep > 0)
+                            if (orderViewModel.currentStep > 0 &&
+                                !orderViewModel.isOrderSubmitted)
                               ElevatedButton(
                                 onPressed: details.onStepCancel,
                                 child: const Text('BACK'),
                               ),
                             const Spacer(),
-                            ElevatedButton(
-                              onPressed: details.onStepContinue,
-                              child: const Text('NEXT'),
-                            ),
+                            if (orderViewModel.currentStep < 2)
+                              ElevatedButton(
+                                onPressed: details.onStepContinue,
+                                child: const Text('NEXT'),
+                              ),
+                            if (orderViewModel.currentStep == 2 &&
+                                orderViewModel.isFormCompleted &&
+                                !orderViewModel.isOrderSubmitted)
+                              ElevatedButton(
+                                onPressed: details.onStepContinue,
+                                child: const Text('CONTINUE'),
+                              ),
                           ],
                         );
                       },
@@ -103,7 +109,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                             ),
                           ),
                           isActive: orderViewModel.currentStep == 0,
-                          state: orderViewModel.currentStep >= 1
+                          state: orderViewModel.isStepOneCompleted
                               ? StepState.complete
                               : StepState.indexed,
                         ),
@@ -114,31 +120,37 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                             child: const Column(),
                           ),
                           isActive: orderViewModel.currentStep == 1,
-                          state: orderViewModel.currentStep >= 2
+                          state: orderViewModel.isStepTwoCompleted
                               ? StepState.complete
                               : StepState.indexed,
                         ),
                         Step(
                           title: const Text('Summary'),
                           content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text('Name: ${orderViewModel.name}' ?? ''),
-                              Text('Email address: ${orderViewModel.email}' ??
-                                  ''),
+                              if (!orderViewModel.isOrderSubmitted)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text('Name: ${orderViewModel.name}' ?? ''),
+                                    Text(
+                                        'Email address: ${orderViewModel.email}' ??
+                                            ''),
+                                  ],
+                                ),
+                              if (orderViewModel.isOrderSubmitted)
+                                const Text('Thank you for your order.'),
                             ],
                           ),
-                          isActive: orderViewModel.currentStep == 2 &&
-                              !orderViewModel.isFormCompleted,
-                          state: orderViewModel.isFormCompleted
+                          isActive: orderViewModel.currentStep == 2,
+                          state: orderViewModel.isOrderSubmitted
                               ? StepState.complete
                               : StepState.indexed,
                         ),
                       ],
                     ),
                   ),
-                if (orderViewModel.isFormCompleted)
-                  const Text('Thank you for your order.'),
+                ),
               ],
             ),
           ),
