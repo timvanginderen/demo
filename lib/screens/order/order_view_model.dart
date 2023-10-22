@@ -38,6 +38,8 @@ abstract class OrderViewModel extends ViewModel {
   String? get email;
 
   String? get phoneNumber;
+
+  bool get isFormCompleted;
 }
 
 @Injectable(as: OrderViewModel)
@@ -46,6 +48,7 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
 
   final NavigationService navigationService;
   int _currentStep = 0;
+  bool _isFormCompleted = false;
 
   @override
   Future<void> initState() async {}
@@ -61,6 +64,9 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
 
   @override
   int get currentStep => _currentStep;
+
+  @override
+  bool get isFormCompleted => _isFormCompleted;
 
   @override
   void onStepContinue() {
@@ -82,7 +88,9 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
     notifyListeners();
   }
 
-  void finishForm() {}
+  void finishForm() {
+    _isFormCompleted = true;
+  }
 
   @override
   String? validateName(String? name) {
