@@ -2,6 +2,7 @@ import 'package:demo/core/di/di.dart';
 import 'package:demo/core/domain/pricing_tier.dart';
 import 'package:demo/core/presentation/navigation/navigation_service.dart';
 import 'package:demo/core/presentation/view_model.dart';
+import 'package:demo/core/utils/extensions.dart';
 import 'package:demo/screens/order/order_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -145,7 +146,7 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
 
   @override
   String? validateName(String? name) {
-    if (name == null || name.isEmpty) {
+    if (name.isNullOrBlank) {
       return 'Name cannot be empty';
     }
     return null;
@@ -153,7 +154,7 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
 
   @override
   String? validateEmail(String? email) {
-    if (email == null || email.isEmpty) {
+    if (email.isNullOrBlank) {
       return 'Email address cannot be empty';
     }
 
@@ -165,7 +166,7 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
         r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
         r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
         r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
-    if (!RegExp(pattern).hasMatch(email)) {
+    if (!RegExp(pattern).hasMatch(email!)) {
       return 'Email address not valid';
     }
 

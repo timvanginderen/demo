@@ -23,11 +23,9 @@ class SummaryStep extends StatelessWidget {
                   const Text('Name:'),
                   const SizedBox(width: 4.0),
                   Text(
-                    orderViewModel.name ?? 'no name',
+                    _isInvalidName() ? 'not valid' : orderViewModel.name!,
                     style: TextStyle(
-                        color: orderViewModel.name == null
-                            ? Colors.red
-                            : Colors.black),
+                        color: _isInvalidName() ? Colors.red : Colors.black),
                   ),
                 ],
               ),
@@ -36,11 +34,9 @@ class SummaryStep extends StatelessWidget {
                   const Text('Email address:'),
                   const SizedBox(width: 4.0),
                   Text(
-                    orderViewModel.email ?? 'no email',
+                    _isInvalidEmail() ? 'not valid' : orderViewModel.email!,
                     style: TextStyle(
-                        color: orderViewModel.email == null
-                            ? Colors.red
-                            : Colors.black),
+                        color: _isInvalidEmail() ? Colors.red : Colors.black),
                   ),
                 ],
               ),
@@ -78,4 +74,10 @@ class SummaryStep extends StatelessWidget {
       ],
     );
   }
+
+  bool _isInvalidEmail() =>
+      orderViewModel.validateEmail(orderViewModel.email) != null;
+
+  bool _isInvalidName() =>
+      orderViewModel.validateName(orderViewModel.name) != null;
 }
