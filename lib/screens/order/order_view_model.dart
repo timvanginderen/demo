@@ -1,6 +1,8 @@
 import 'package:demo/core/di/di.dart';
+import 'package:demo/core/domain/pricing_tier.dart';
 import 'package:demo/core/presentation/navigation/navigation_service.dart';
 import 'package:demo/core/presentation/view_model.dart';
+import 'package:demo/screens/order/order_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:injectable/injectable.dart';
@@ -26,7 +28,17 @@ abstract class OrderViewModel extends ViewModel {
 
   String? validateEmail(String? email);
 
-  // String? validatePhoneNumber(String? phoneNumber);
+  String? validatePricing(bool? pricing);
+
+  String? get name;
+
+  String? get email;
+
+  String? get phoneNumber;
+
+  PricingTier? get tier;
+
+  Set<PricingPeriod> get pricingPeriodSelection;
 
   void setName(String name);
 
@@ -34,11 +46,18 @@ abstract class OrderViewModel extends ViewModel {
 
   void setPhoneNumber(String phoneNumber);
 
-  String? get name;
+  void onPriceTierChanged(PricingTier? tier, GlobalKey<FormState> formKey);
 
-  String? get email;
+  void onPricingPeriodSelectionChanged(
+      Set<PricingPeriod> pricingPeriodSelection);
 
-  String? get phoneNumber;
+  String getFormattedPriceString(PricingTier tier);
+
+  String getFormattedSummaryPriceString();
+
+  String getFormattedDiscountString();
+
+  bool isEligibleForDiscount();
 
   bool get isStepOneCompleted;
 
@@ -56,7 +75,7 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
   OrderViewModelImpl(this.navigationService);
 
   final NavigationService navigationService;
-  int _currentStep = 0;
+  // int _currentStep = 0;
 
   @override
   Future<void> initState() async {}
@@ -71,7 +90,15 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
   String? phoneNumber;
 
   @override
-  int get currentStep => _currentStep;
+  PricingTier? tier;
+
+  @override
+  Set<PricingPeriod> pricingPeriodSelection = <PricingPeriod>{
+    PricingPeriod.monthly
+  };
+
+  @override
+  int currentStep = 0;
 
   @override
   bool get isFormCompleted => isStepOneCompleted && isStepTwoCompleted;
@@ -96,22 +123,22 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
         case 1:
           isStepTwoCompleted = true;
       }
-      _currentStep += 1;
+      currentStep += 1;
     }
     notifyListeners();
   }
 
   @override
   void onStepCancel() {
-    if (_currentStep > 0) {
-      _currentStep -= 1;
+    if (currentStep > 0) {
+      currentStep -= 1;
     }
     notifyListeners();
   }
 
   @override
   void tapped(int step) {
-    _currentStep = step;
+    currentStep = step;
     notifyListeners();
   }
 
@@ -148,13 +175,13 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
     return null;
   }
 
-  // @override
-  // String? validatePhoneNumber(String? phoneNumber) {
-  //   if (phoneNumber == null || phoneNumber.isEmpty) {
-  //     return 'Phone number cannot be empty';
-  //   }
-  //   return null;
-  // }
+  @override
+  String? validatePricing(bool? pricing) {
+    if (pricing == null) {
+      return 'Please choose a pricing plan.';
+    }
+    return null;
+  }
 
   @override
   void setName(String name) {
@@ -171,6 +198,82 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
     this.phoneNumber = phoneNumber;
   }
 
+  // @override
+  // void setTier(PricingTier? tier) {
+  //   this.tier = tier;
+  // }
+
+  @override
+  void onPriceTierChanged(PricingTier? tier, GlobalKey<FormState> formKey) {
+    this.tier = tier;
+    formKey.currentState!.validate();
+    notifyListeners();
+  }
+
+  @override
+  void onPricingPeriodSelectionChanged(
+      Set<PricingPeriod> pricingPeriodSelection) {
+    this.pricingPeriodSelection = pricingPeriodSelection;
+    notifyListeners();
+  }
+
   @override
   void goToLoginScreen() => navigationService.goToLoginScreen();
+
+  @override
+  String getFormattedPriceString(PricingTier tier) {
+    switch (_getSelectedPricingPeriod()) {
+      case PricingPeriod.monthly:
+        return _formatMonthlyPriceForTier(tier);
+      case PricingPeriod.yearly:
+        return _formatYearlyPriceForTier(tier);
+    }
+  }
+
+  @override
+  String getFormattedSummaryPriceString() => tier == null
+      ? ''
+      : _formatYearlyPriceForTier(tier!, discount: isEligibleForDiscount());
+
+  @override
+  String getFormattedDiscountString() {
+    if (tier == null) {
+      return '';
+    }
+    switch (_getSelectedPricingPeriod()) {
+      case PricingPeriod.monthly:
+        return 'no discount';
+      case PricingPeriod.yearly:
+        return '${_calculateDiscount(tier!)} euro';
+    }
+  }
+
+  @override
+  bool isEligibleForDiscount() =>
+      _getSelectedPricingPeriod() == PricingPeriod.yearly;
+
+  PricingPeriod _getSelectedPricingPeriod() {
+    if (pricingPeriodSelection.contains(PricingPeriod.yearly)) {
+      return PricingPeriod.yearly;
+    } else {
+      return PricingPeriod.monthly;
+    }
+  }
+
+  String _formatMonthlyPriceForTier(PricingTier pricingTier) {
+    final int price = monthlyPrices[pricingTier] ?? 0;
+    return '$price euro per month';
+  }
+
+  String _formatYearlyPriceForTier(PricingTier pricingTier,
+      {bool discount = true}) {
+    int price = monthlyPrices[pricingTier] ?? 0;
+    price = price * (discount ? 10 : 12);
+    return '$price euro per year';
+  }
+
+  int _calculateDiscount(PricingTier pricingTier) {
+    final int price = monthlyPrices[pricingTier] ?? 0;
+    return price * 2;
+  }
 }

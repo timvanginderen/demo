@@ -26,12 +26,6 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
     GlobalKey<FormState>(),
   ];
 
-  PricingTier? _tier;
-
-  Set<PricingPeriod> _segmentedButtonSelection = <PricingPeriod>{
-    PricingPeriod.monthly
-  };
-
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -144,26 +138,22 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                           content: Form(
                             key: _formKeys[1],
                             child: FormField<bool>(
-                              builder: (FormFieldState<bool> state) {
+                              builder: (FormFieldState<bool> formFieldState) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     ListTile(
                                       title: const Text('Basic'),
-                                      subtitle: Text(_formatPriceString(
-                                          PricingTier.basic,
-                                          _getSelectedPricingPeriod())),
+                                      subtitle: Text(orderViewModel
+                                          .getFormattedPriceString(
+                                              PricingTier.basic)),
                                       leading: Radio<PricingTier>(
                                         value: PricingTier.basic,
-                                        groupValue: _tier,
+                                        groupValue: orderViewModel.tier,
                                         onChanged: (PricingTier? value) {
-                                          setState(() {
-                                            _tier = value;
-                                            state.setValue(true);
-                                            _formKeys[1]
-                                                .currentState!
-                                                .validate();
-                                          });
+                                          formFieldState.setValue(true);
+                                          orderViewModel.onPriceTierChanged(
+                                              value, _formKeys[1]);
                                         },
                                       ),
                                       // trailing: ,
@@ -171,45 +161,37 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                     ),
                                     ListTile(
                                       title: const Text('Normal'),
-                                      subtitle: Text(_formatPriceString(
-                                          PricingTier.normal,
-                                          _getSelectedPricingPeriod())),
+                                      subtitle: Text(orderViewModel
+                                          .getFormattedPriceString(
+                                              PricingTier.normal)),
                                       leading: Radio<PricingTier>(
                                         value: PricingTier.normal,
-                                        groupValue: _tier,
+                                        groupValue: orderViewModel.tier,
                                         onChanged: (PricingTier? value) {
-                                          setState(() {
-                                            _tier = value;
-                                            state.setValue(true);
-                                            _formKeys[1]
-                                                .currentState!
-                                                .validate();
-                                          });
+                                          formFieldState.setValue(true);
+                                          orderViewModel.onPriceTierChanged(
+                                              value, _formKeys[1]);
                                         },
                                       ),
                                     ),
                                     ListTile(
                                       title: const Text('Advanced'),
-                                      subtitle: Text(_formatPriceString(
-                                          PricingTier.advanced,
-                                          _getSelectedPricingPeriod())),
+                                      subtitle: Text(orderViewModel
+                                          .getFormattedPriceString(
+                                              PricingTier.advanced)),
                                       leading: Radio<PricingTier>(
                                         value: PricingTier.advanced,
-                                        groupValue: _tier,
+                                        groupValue: orderViewModel.tier,
                                         onChanged: (PricingTier? value) {
-                                          setState(() {
-                                            _tier = value;
-                                            state.setValue(true);
-                                            _formKeys[1]
-                                                .currentState!
-                                                .validate();
-                                          });
+                                          formFieldState.setValue(true);
+                                          orderViewModel.onPriceTierChanged(
+                                              value, _formKeys[1]);
                                         },
                                       ),
                                     ),
-                                    if (state.hasError)
+                                    if (formFieldState.hasError)
                                       Text(
-                                        state.errorText!,
+                                        formFieldState.errorText!,
                                         style:
                                             const TextStyle(color: Colors.red),
                                       )
@@ -228,28 +210,18 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                               value: pricingPeriod.$1,
                                               label: Text(pricingPeriod.$2));
                                         }).toList(),
-                                        selected: _segmentedButtonSelection,
-                                        onSelectionChanged:
-                                            (Set<PricingPeriod> newSelection) {
-                                          setState(() {
-                                            _segmentedButtonSelection =
-                                                newSelection;
-                                          });
-                                        },
+                                        selected: orderViewModel
+                                            .pricingPeriodSelection,
+                                        onSelectionChanged: orderViewModel
+                                            .onPricingPeriodSelectionChanged,
                                       ),
                                     ),
-                                    if (_getSelectedPricingPeriod() ==
-                                        PricingPeriod.yearly)
+                                    if (orderViewModel.isEligibleForDiscount())
                                       const Text('You get 2 months free'),
                                   ],
                                 );
                               },
-                              validator: (bool? value) {
-                                if (value == null) {
-                                  return 'Please choose a pricing plan.';
-                                }
-                                return null;
-                              },
+                              validator: orderViewModel.validatePricing,
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
                             ),
@@ -300,26 +272,24 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                         const Text('Yearly cost:'),
                                         const SizedBox(width: 4.0),
                                         Text(
-                                          _tier != null
-                                              ? _formatYearlyPriceForTier(
-                                                  _tier!,
-                                                  discount:
-                                                      _isEligibleForDiscount())
+                                          orderViewModel.tier != null
+                                              ? orderViewModel
+                                                  .getFormattedSummaryPriceString()
                                               : 'no tier selected',
                                           style: TextStyle(
-                                              color: _tier == null
+                                              color: orderViewModel.tier == null
                                                   ? Colors.red
                                                   : Colors.black),
                                         )
                                       ],
                                     ),
-                                    if (_tier != null)
+                                    if (orderViewModel.tier != null)
                                       Row(
                                         children: <Widget>[
                                           const Text('Discount:'),
                                           const SizedBox(width: 4.0),
-                                          Text(_formatDiscountString(_tier!,
-                                              _getSelectedPricingPeriod()))
+                                          Text(orderViewModel
+                                              .getFormattedDiscountString())
                                         ],
                                       ),
                                   ],
@@ -351,50 +321,4 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
       },
     );
   }
-
-  PricingPeriod _getSelectedPricingPeriod() {
-    if (_segmentedButtonSelection.contains(PricingPeriod.yearly)) {
-      return PricingPeriod.yearly;
-    } else {
-      return PricingPeriod.monthly;
-    }
-  }
-
-  String _formatPriceString(PricingTier tier, PricingPeriod period) {
-    switch (period) {
-      case PricingPeriod.monthly:
-        return _formatMonthlyPriceForTier(tier);
-      case PricingPeriod.yearly:
-        return _formatYearlyPriceForTier(tier);
-    }
-  }
-
-  String _formatMonthlyPriceForTier(PricingTier pricingTier) {
-    final int price = monthlyPrices[pricingTier] ?? 0;
-    return '$price euro per month';
-  }
-
-  String _formatYearlyPriceForTier(PricingTier pricingTier,
-      {bool discount = true}) {
-    int price = monthlyPrices[pricingTier] ?? 0;
-    price = price * (discount ? 10 : 12);
-    return '$price euro per year';
-  }
-
-  String _formatDiscountString(PricingTier pricingTier, PricingPeriod period) {
-    switch (period) {
-      case PricingPeriod.monthly:
-        return 'no discount';
-      case PricingPeriod.yearly:
-        return '${_calculateDiscount(pricingTier)} euro';
-    }
-  }
-
-  int _calculateDiscount(PricingTier pricingTier) {
-    final int price = monthlyPrices[pricingTier] ?? 0;
-    return price * 2;
-  }
-
-  bool _isEligibleForDiscount() =>
-      _getSelectedPricingPeriod() == PricingPeriod.yearly;
 }
