@@ -5,8 +5,10 @@ import 'package:demo/screens/order/steps/summary_step.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// TODO(PricingPeriod): extract
 enum PricingPeriod { monthly, yearly }
 
+// TODO(pricingPeriodOptions): extract
 const List<(PricingPeriod, String)> pricingPeriodOptions =
     <(PricingPeriod, String)>[
   (PricingPeriod.monthly, 'monthly'),

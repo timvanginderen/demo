@@ -34,8 +34,6 @@ class PricingStep extends StatelessWidget {
                     orderViewModel.onPriceTierChanged(value, formKey);
                   },
                 ),
-                // trailing: ,
-                // onTap: () {},
               ),
               ListTile(
                 title: const Text('Normal'),
