@@ -66,7 +66,8 @@ class SummaryStep extends StatelessWidget {
             ],
           ),
         if (orderViewModel.isOrderSubmitted)
-          const Column(
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text('Thank you for your order.'),
             ],

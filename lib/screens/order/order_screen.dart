@@ -60,29 +60,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                     onStepCancel: orderViewModel.onStepCancel,
                     controlsBuilder:
                         (BuildContext context, ControlsDetails details) {
-                      return Row(
-                        children: <Widget>[
-                          if (orderViewModel.currentStep > 0 &&
-                              !orderViewModel.isOrderSubmitted)
-                            ElevatedButton(
-                              onPressed: details.onStepCancel,
-                              child: const Text('BACK'),
-                            ),
-                          const Spacer(),
-                          if (orderViewModel.currentStep < 2)
-                            ElevatedButton(
-                              onPressed: details.onStepContinue,
-                              child: const Text('NEXT'),
-                            ),
-                          if (orderViewModel.currentStep == 2 &&
-                              orderViewModel.isFormCompleted &&
-                              !orderViewModel.isOrderSubmitted)
-                            ElevatedButton(
-                              onPressed: details.onStepContinue,
-                              child: const Text('CONTINUE'),
-                            ),
-                        ],
-                      );
+                      return Container();
                     },
                     steps: <Step>[
                       Step(
@@ -120,11 +98,99 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                   ),
                 ),
               ),
-              // ElevatedButton(
-              //     onPressed: orderViewModel.goToLoginScreen,
-              //     child: const Text('Back to login'))
+              if (orderViewModel.isOrderSubmitted)
+                ElevatedButton(
+                    onPressed: orderViewModel.goToLoginScreen,
+                    child: const Text('Back to login'))
             ],
           ),
+          // TODO(BottomNavigation): extract buttons
+          bottomNavigationBar: orderViewModel.isOrderSubmitted
+              ? null
+              : Container(
+                  height: 60,
+                  color: Colors.black12,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      if (orderViewModel.currentStep > 0 &&
+                          !orderViewModel.isOrderSubmitted)
+                        Expanded(
+                          child: Material(
+                            color: Colors.blue,
+                            child: InkWell(
+                              onTap: () => orderViewModel.onStepCancel(),
+                              child: const Padding(
+                                padding: EdgeInsets.only(top: 8.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.navigate_before,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      'BACK',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (orderViewModel.currentStep < 2)
+                        Expanded(
+                          child: Material(
+                            color: Colors.blue,
+                            child: InkWell(
+                              onTap: () => _goToNextStep(orderViewModel),
+                              child: const Padding(
+                                padding: EdgeInsets.only(top: 8.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.navigate_next,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      'NEXT',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (orderViewModel.currentStep == 2 &&
+                          orderViewModel.isFormCompleted &&
+                          !orderViewModel.isOrderSubmitted)
+                        Expanded(
+                          child: Material(
+                            color: Colors.green,
+                            child: InkWell(
+                              onTap: () => _goToNextStep(orderViewModel),
+                              child: const Padding(
+                                padding: EdgeInsets.only(top: 8.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.navigate_next,
+                                      color: Colors.white,
+                                    ),
+                                    Text(
+                                      'CONTINUE',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
         );
       },
     );

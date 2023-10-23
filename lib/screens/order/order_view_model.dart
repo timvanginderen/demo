@@ -263,19 +263,19 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
   }
 
   String _formatMonthlyPriceForTier(PricingTier pricingTier) {
-    final int price = monthlyPrices[pricingTier] ?? 0;
+    final int price = kMonthlyPrices[pricingTier] ?? 0;
     return '$price euro per month';
   }
 
   String _formatYearlyPriceForTier(PricingTier pricingTier,
       {bool discount = true}) {
-    int price = monthlyPrices[pricingTier] ?? 0;
+    int price = kMonthlyPrices[pricingTier] ?? 0;
     price = price * (discount ? 10 : 12);
     return '$price euro per year';
   }
 
   int _calculateDiscount(PricingTier pricingTier) {
-    final int price = monthlyPrices[pricingTier] ?? 0;
+    final int price = kMonthlyPrices[pricingTier] ?? 0;
     return price * 2;
   }
 }
