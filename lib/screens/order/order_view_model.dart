@@ -47,6 +47,8 @@ abstract class OrderViewModel extends ViewModel {
   bool get isFormCompleted;
 
   bool get isOrderSubmitted;
+
+  void goToLoginScreen();
 }
 
 @Injectable(as: OrderViewModel)
@@ -168,4 +170,7 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
   void setPhoneNumber(String phoneNumber) {
     this.phoneNumber = phoneNumber;
   }
+
+  @override
+  void goToLoginScreen() => navigationService.goToLoginScreen();
 }

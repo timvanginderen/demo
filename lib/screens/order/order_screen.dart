@@ -23,7 +23,18 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
       builder: (_, WidgetRef ref, __) {
         final OrderViewModel orderViewModel = ref.watch(orderViewModelProvider);
         return Scaffold(
-          appBar: AppBar(title: const Text('Order')),
+          appBar: AppBar(
+            title: const Text('Order'),
+            leading: InkWell(
+              onTap: () {
+                orderViewModel.goToLoginScreen();
+              },
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+            ),
+          ),
           body: Container(
             child: Column(
               children: <Widget>[
@@ -139,7 +150,11 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                                   ],
                                 ),
                               if (orderViewModel.isOrderSubmitted)
-                                const Text('Thank you for your order.'),
+                                const Column(
+                                  children: <Widget>[
+                                    Text('Thank you for your order.'),
+                                  ],
+                                ),
                             ],
                           ),
                           isActive: orderViewModel.currentStep == 2,
@@ -151,6 +166,9 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                     ),
                   ),
                 ),
+                ElevatedButton(
+                    onPressed: orderViewModel.goToLoginScreen,
+                    child: const Text('Back to login'))
               ],
             ),
           ),
