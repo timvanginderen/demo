@@ -198,11 +198,6 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
     this.phoneNumber = phoneNumber;
   }
 
-  // @override
-  // void setTier(PricingTier? tier) {
-  //   this.tier = tier;
-  // }
-
   @override
   void onPriceTierChanged(PricingTier? tier, GlobalKey<FormState> formKey) {
     this.tier = tier;
