@@ -1,9 +1,9 @@
-import 'package:demo/core/domain/pricing_tier.dart';
 import 'package:demo/screens/order/order_view_model.dart';
+import 'package:demo/screens/order/steps/details_step.dart';
+import 'package:demo/screens/order/steps/pricing_step.dart';
+import 'package:demo/screens/order/steps/summary_step.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:intl_phone_field/phone_number.dart';
 
 enum PricingPeriod { monthly, yearly }
 
@@ -54,9 +54,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                     physics: const ScrollPhysics(),
                     currentStep: orderViewModel.currentStep,
                     onStepTapped: (int step) => orderViewModel.tapped(step),
-                    onStepContinue: () {
-                      _goToNextStep(orderViewModel);
-                    },
+                    onStepContinue: () => _goToNextStep(orderViewModel),
                     onStepCancel: orderViewModel.onStepCancel,
                     controlsBuilder:
                         (BuildContext context, ControlsDetails details) {
@@ -87,52 +85,10 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                     steps: <Step>[
                       Step(
                         title: const Text('Details'),
-                        content: Form(
-                          key: _formKeys[0],
-                          child: Column(
-                            children: <Widget>[
-                              TextFormField(
-                                decoration:
-                                    const InputDecoration(labelText: 'Name'),
-                                validator: orderViewModel.validateName,
-                                onChanged: (String value) =>
-                                    orderViewModel.setName(value),
-                                onTapOutside: (PointerDownEvent event) =>
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus(),
-                                textInputAction: TextInputAction.next,
-                              ),
-                              TextFormField(
-                                decoration: const InputDecoration(
-                                    labelText: 'Email Address'),
-                                validator: orderViewModel.validateEmail,
-                                keyboardType: TextInputType.emailAddress,
-                                onChanged: (String value) =>
-                                    orderViewModel.setEmail(value),
-                                onTapOutside: (PointerDownEvent event) =>
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus(),
-                                textInputAction: TextInputAction.next,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 16.0),
-                                child: IntlPhoneField(
-                                  decoration: const InputDecoration(
-                                    labelText: 'Phone Number',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                  onChanged: (PhoneNumber phone) {
-                                    orderViewModel
-                                        .setPhoneNumber(phone.completeNumber);
-                                  },
-                                  initialCountryCode: 'BE',
-                                  textInputAction: TextInputAction.done,
-                                  onSubmitted: (_) =>
-                                      _goToNextStep(orderViewModel),
-                                ),
-                              ),
-                            ],
-                          ),
+                        content: DetailsStep(
+                          formKey: _formKeys[0],
+                          orderViewModel: orderViewModel,
+                          onSubmitted: () => _goToNextStep(orderViewModel),
                         ),
                         isActive: orderViewModel.currentStep == 0,
                         state: orderViewModel.isStepOneCompleted
@@ -141,94 +97,9 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                       ),
                       Step(
                         title: const Text('Pricing'),
-                        content: Form(
-                          key: _formKeys[1],
-                          child: FormField<bool>(
-                            builder: (FormFieldState<bool> formFieldState) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  ListTile(
-                                    title: const Text('Basic'),
-                                    subtitle: Text(
-                                        orderViewModel.getFormattedPriceString(
-                                            PricingTier.basic)),
-                                    leading: Radio<PricingTier>(
-                                      value: PricingTier.basic,
-                                      groupValue: orderViewModel.tier,
-                                      onChanged: (PricingTier? value) {
-                                        formFieldState.setValue(true);
-                                        orderViewModel.onPriceTierChanged(
-                                            value, _formKeys[1]);
-                                      },
-                                    ),
-                                    // trailing: ,
-                                    // onTap: () {},
-                                  ),
-                                  ListTile(
-                                    title: const Text('Normal'),
-                                    subtitle: Text(
-                                        orderViewModel.getFormattedPriceString(
-                                            PricingTier.normal)),
-                                    leading: Radio<PricingTier>(
-                                      value: PricingTier.normal,
-                                      groupValue: orderViewModel.tier,
-                                      onChanged: (PricingTier? value) {
-                                        formFieldState.setValue(true);
-                                        orderViewModel.onPriceTierChanged(
-                                            value, _formKeys[1]);
-                                      },
-                                    ),
-                                  ),
-                                  ListTile(
-                                    title: const Text('Advanced'),
-                                    subtitle: Text(
-                                        orderViewModel.getFormattedPriceString(
-                                            PricingTier.advanced)),
-                                    leading: Radio<PricingTier>(
-                                      value: PricingTier.advanced,
-                                      groupValue: orderViewModel.tier,
-                                      onChanged: (PricingTier? value) {
-                                        formFieldState.setValue(true);
-                                        orderViewModel.onPriceTierChanged(
-                                            value, _formKeys[1]);
-                                      },
-                                    ),
-                                  ),
-                                  if (formFieldState.hasError)
-                                    Text(
-                                      formFieldState.errorText!,
-                                      style: const TextStyle(color: Colors.red),
-                                    )
-                                  else
-                                    Container(),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: SegmentedButton<PricingPeriod>(
-                                      segments: pricingPeriodOptions
-                                          .map<ButtonSegment<PricingPeriod>>(((
-                                                PricingPeriod,
-                                                String
-                                              ) pricingPeriod) {
-                                        return ButtonSegment<PricingPeriod>(
-                                            value: pricingPeriod.$1,
-                                            label: Text(pricingPeriod.$2));
-                                      }).toList(),
-                                      selected:
-                                          orderViewModel.pricingPeriodSelection,
-                                      onSelectionChanged: orderViewModel
-                                          .onPricingPeriodSelectionChanged,
-                                    ),
-                                  ),
-                                  if (orderViewModel.isEligibleForDiscount())
-                                    const Text('You get 2 months free'),
-                                ],
-                              );
-                            },
-                            validator: orderViewModel.validatePricing,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
-                          ),
+                        content: PricingStep(
+                          formKey: _formKeys[1],
+                          orderViewModel: orderViewModel,
                         ),
                         isActive: orderViewModel.currentStep == 1,
                         state: orderViewModel.isStepTwoCompleted
@@ -237,74 +108,7 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                       ),
                       Step(
                         title: const Text('Summary'),
-                        content: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            if (!orderViewModel.isOrderSubmitted)
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      const Text('Name:'),
-                                      const SizedBox(width: 4.0),
-                                      Text(
-                                        orderViewModel.name ?? 'no name',
-                                        style: TextStyle(
-                                            color: orderViewModel.name == null
-                                                ? Colors.red
-                                                : Colors.black),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      const Text('Email address:'),
-                                      const SizedBox(width: 4.0),
-                                      Text(
-                                        orderViewModel.email ?? 'no email',
-                                        style: TextStyle(
-                                            color: orderViewModel.email == null
-                                                ? Colors.red
-                                                : Colors.black),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      const Text('Yearly cost:'),
-                                      const SizedBox(width: 4.0),
-                                      Text(
-                                        orderViewModel.tier != null
-                                            ? orderViewModel
-                                                .getFormattedSummaryPriceString()
-                                            : 'no tier selected',
-                                        style: TextStyle(
-                                            color: orderViewModel.tier == null
-                                                ? Colors.red
-                                                : Colors.black),
-                                      )
-                                    ],
-                                  ),
-                                  if (orderViewModel.tier != null)
-                                    Row(
-                                      children: <Widget>[
-                                        const Text('Discount:'),
-                                        const SizedBox(width: 4.0),
-                                        Text(orderViewModel
-                                            .getFormattedDiscountString())
-                                      ],
-                                    ),
-                                ],
-                              ),
-                            if (orderViewModel.isOrderSubmitted)
-                              const Column(
-                                children: <Widget>[
-                                  Text('Thank you for your order.'),
-                                ],
-                              ),
-                          ],
-                        ),
+                        content: SummaryStep(orderViewModel: orderViewModel),
                         isActive: orderViewModel.currentStep == 2,
                         state: orderViewModel.isOrderSubmitted
                             ? StepState.complete
