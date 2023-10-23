@@ -22,7 +22,7 @@ abstract class OrderViewModel extends ViewModel {
 
   void onStepCancel();
 
-  void tapped(int step);
+  void onStepTapped(int step, {GlobalKey<FormState>? formKey});
 
   String? validateName(String? name);
 
@@ -75,7 +75,6 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
   OrderViewModelImpl(this.navigationService);
 
   final NavigationService navigationService;
-  // int _currentStep = 0;
 
   @override
   Future<void> initState() async {}
@@ -117,12 +116,7 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
     if (formKey == null && isFormCompleted) {
       submitOrder();
     } else if (formKey != null && formKey.currentState!.validate()) {
-      switch (currentStep) {
-        case 0:
-          isStepOneCompleted = true;
-        case 1:
-          isStepTwoCompleted = true;
-      }
+      _setStepCompleted(true);
       currentStep += 1;
     }
     notifyListeners();
@@ -137,7 +131,10 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
   }
 
   @override
-  void tapped(int step) {
+  void onStepTapped(int step, {GlobalKey<FormState>? formKey}) {
+    if (formKey != null) {
+      _setStepCompleted(formKey.currentState!.validate());
+    }
     currentStep = step;
     notifyListeners();
   }
@@ -246,6 +243,15 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
   @override
   bool isEligibleForDiscount() =>
       _getSelectedPricingPeriod() == PricingPeriod.yearly;
+
+  void _setStepCompleted(bool completed) {
+    switch (currentStep) {
+      case 0:
+        isStepOneCompleted = completed;
+      case 1:
+        isStepTwoCompleted = completed;
+    }
+  }
 
   PricingPeriod _getSelectedPricingPeriod() {
     if (pricingPeriodSelection.contains(PricingPeriod.yearly)) {

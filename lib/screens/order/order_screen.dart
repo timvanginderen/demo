@@ -53,7 +53,9 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
                     type: StepperType.horizontal,
                     physics: const ScrollPhysics(),
                     currentStep: orderViewModel.currentStep,
-                    onStepTapped: (int step) => orderViewModel.tapped(step),
+                    onStepTapped: (int step) => orderViewModel.onStepTapped(
+                        step,
+                        formKey: _getCurrentFormKey(orderViewModel)),
                     onStepContinue: () => _goToNextStep(orderViewModel),
                     onStepCancel: orderViewModel.onStepCancel,
                     controlsBuilder:
@@ -129,10 +131,16 @@ class _OrderScreenState extends ConsumerState<OrderScreen> {
   }
 
   void _goToNextStep(OrderViewModel orderViewModel) {
+    final GlobalKey<FormState>? currentFormKey =
+        _getCurrentFormKey(orderViewModel);
+    orderViewModel.onStepContinue(currentFormKey);
+  }
+
+  GlobalKey<FormState>? _getCurrentFormKey(OrderViewModel orderViewModel) {
     GlobalKey<FormState>? formKey;
     if (orderViewModel.currentStep < 2) {
       formKey = _formKeys[orderViewModel.currentStep];
     }
-    orderViewModel.onStepContinue(formKey);
+    return formKey;
   }
 }
