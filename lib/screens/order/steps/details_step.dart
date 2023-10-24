@@ -24,6 +24,7 @@ class DetailsStep extends StatelessWidget {
           TextFormField(
             decoration: const InputDecoration(labelText: 'Name'),
             validator: orderViewModel.validateName,
+            keyboardType: TextInputType.name,
             onChanged: (String value) => orderViewModel.setName(value),
             onTapOutside: (PointerDownEvent event) =>
                 FocusManager.instance.primaryFocus?.unfocus(),
