@@ -13,6 +13,8 @@ import 'package:demo/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+void main() => runAppCommon(Flavor.dev);
+
 Future<void> runAppCommon(Flavor flavor) async {
   WidgetsFlutterBinding.ensureInitialized();
   setupDependencies(flavor);
