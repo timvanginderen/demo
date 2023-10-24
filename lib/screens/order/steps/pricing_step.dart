@@ -34,6 +34,10 @@ class PricingStep extends StatelessWidget {
                     orderViewModel.onPriceTierChanged(value, formKey);
                   },
                 ),
+                onTap: () {
+                  formFieldState.setValue(true);
+                  orderViewModel.onPriceTierChanged(PricingTier.basic, formKey);
+                },
               ),
               ListTile(
                 title: const Text('Normal'),
@@ -47,6 +51,11 @@ class PricingStep extends StatelessWidget {
                     orderViewModel.onPriceTierChanged(value, formKey);
                   },
                 ),
+                onTap: () {
+                  formFieldState.setValue(true);
+                  orderViewModel.onPriceTierChanged(
+                      PricingTier.normal, formKey);
+                },
               ),
               ListTile(
                 title: const Text('Advanced'),
@@ -60,6 +69,11 @@ class PricingStep extends StatelessWidget {
                     orderViewModel.onPriceTierChanged(value, formKey);
                   },
                 ),
+                onTap: () {
+                  formFieldState.setValue(true);
+                  orderViewModel.onPriceTierChanged(
+                      PricingTier.advanced, formKey);
+                },
               ),
               if (formFieldState.hasError)
                 Text(
