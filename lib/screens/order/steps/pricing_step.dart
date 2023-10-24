@@ -84,20 +84,30 @@ class PricingStep extends StatelessWidget {
                 Container(),
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: SegmentedButton<PricingPeriod>(
-                  segments: pricingPeriodOptions
-                      .map<ButtonSegment<PricingPeriod>>(
-                          ((PricingPeriod, String) pricingPeriod) {
-                    return ButtonSegment<PricingPeriod>(
-                        value: pricingPeriod.$1, label: Text(pricingPeriod.$2));
-                  }).toList(),
-                  selected: orderViewModel.pricingPeriodSelection,
-                  onSelectionChanged:
-                      orderViewModel.onPricingPeriodSelectionChanged,
+                child: Row(
+                  children: <Widget>[
+                    const Text('Select period: '),
+                    const SizedBox(width: 8.0),
+                    SegmentedButton<PricingPeriod>(
+                      segments: pricingPeriodOptions
+                          .map<ButtonSegment<PricingPeriod>>(
+                              ((PricingPeriod, String) pricingPeriod) {
+                        return ButtonSegment<PricingPeriod>(
+                            value: pricingPeriod.$1,
+                            label: Text(pricingPeriod.$2));
+                      }).toList(),
+                      selected: orderViewModel.pricingPeriodSelection,
+                      onSelectionChanged:
+                          orderViewModel.onPricingPeriodSelectionChanged,
+                    ),
+                  ],
                 ),
               ),
               if (orderViewModel.isEligibleForDiscount())
-                const Text('You get 2 months free'),
+                Text(
+                  'You get 2 months free!',
+                  style: TextStyle(color: Colors.green.shade900),
+                ),
             ],
           );
         },
