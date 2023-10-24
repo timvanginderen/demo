@@ -1,4 +1,5 @@
 import 'package:demo/core/domain/pricing_tier.dart';
+import 'package:demo/core/utils/extensions.dart';
 import 'package:demo/screens/order/order_screen.dart';
 import 'package:demo/screens/order/order_view_model.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class PricingStep extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               ListTile(
-                title: const Text('Basic'),
+                title: Text(PricingTier.basic.name.capitalize()),
                 subtitle: Text(
                     orderViewModel.getFormattedPriceString(PricingTier.basic)),
                 leading: Radio<PricingTier>(
@@ -40,7 +41,7 @@ class PricingStep extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: const Text('Normal'),
+                title: Text(PricingTier.normal.name.capitalize()),
                 subtitle: Text(
                     orderViewModel.getFormattedPriceString(PricingTier.normal)),
                 leading: Radio<PricingTier>(
@@ -58,7 +59,7 @@ class PricingStep extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: const Text('Advanced'),
+                title: Text(PricingTier.advanced.name.capitalize()),
                 subtitle: Text(orderViewModel
                     .getFormattedPriceString(PricingTier.advanced)),
                 leading: Radio<PricingTier>(

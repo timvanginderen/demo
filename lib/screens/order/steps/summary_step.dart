@@ -1,3 +1,4 @@
+import 'package:demo/core/utils/extensions.dart';
 import 'package:demo/screens/order/order_view_model.dart';
 import 'package:flutter/material.dart';
 
@@ -42,25 +43,53 @@ class SummaryStep extends StatelessWidget {
               ),
               Row(
                 children: <Widget>[
-                  const Text('Yearly cost:'),
+                  const Text('Pricing package:'),
                   const SizedBox(width: 4.0),
                   Text(
                     orderViewModel.tier != null
-                        ? orderViewModel.getFormattedSummaryPriceString()
+                        ? orderViewModel.tier!.name.capitalize()
                         : 'no tier selected',
                     style: TextStyle(
-                        color: orderViewModel.tier == null
-                            ? Colors.red
-                            : Colors.black),
+                      color: orderViewModel.tier == null
+                          ? Colors.red
+                          : Colors.black,
+                    ),
                   )
                 ],
               ),
               if (orderViewModel.tier != null)
-                Row(
+                Column(
                   children: <Widget>[
-                    const Text('Discount:'),
-                    const SizedBox(width: 4.0),
-                    Text(orderViewModel.getFormattedDiscountString())
+                    Row(
+                      children: <Widget>[
+                        const Text('Yearly cost:'),
+                        const SizedBox(width: 4.0),
+                        Text(
+                          orderViewModel.tier != null
+                              ? orderViewModel.getFormattedSummaryPriceString()
+                              : 'no tier selected',
+                          style: TextStyle(
+                            color: orderViewModel.tier == null
+                                ? Colors.red
+                                : Colors.black,
+                          ),
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        const Text('Discount:'),
+                        const SizedBox(width: 4.0),
+                        Text(
+                          orderViewModel.getFormattedDiscountString(),
+                          style: TextStyle(
+                            color: orderViewModel.isEligibleForDiscount()
+                                ? Colors.green.shade900
+                                : Colors.black,
+                          ),
+                        )
+                      ],
+                    ),
                   ],
                 ),
             ],
