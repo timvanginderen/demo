@@ -176,7 +176,7 @@ class OrderViewModelImpl extends BaseViewModel implements OrderViewModel {
   @override
   String? validatePricing(bool? pricing) {
     if (pricing == null) {
-      return 'Please choose a pricing plan.';
+      return 'Pricing plan cannot be empty';
     }
     return null;
   }

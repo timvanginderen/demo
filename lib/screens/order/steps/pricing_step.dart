@@ -23,58 +23,26 @@ class PricingStep extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              ListTile(
-                title: Text(PricingTier.basic.name.capitalize()),
-                subtitle: Text(
-                    orderViewModel.getFormattedPriceString(PricingTier.basic)),
-                leading: Radio<PricingTier>(
-                  value: PricingTier.basic,
-                  groupValue: orderViewModel.tier,
-                  onChanged: (PricingTier? value) {
-                    formFieldState.setValue(true);
-                    orderViewModel.onPriceTierChanged(value, formKey);
-                  },
-                ),
-                onTap: () {
-                  formFieldState.setValue(true);
-                  orderViewModel.onPriceTierChanged(PricingTier.basic, formKey);
-                },
-              ),
-              ListTile(
-                title: Text(PricingTier.normal.name.capitalize()),
-                subtitle: Text(
-                    orderViewModel.getFormattedPriceString(PricingTier.normal)),
-                leading: Radio<PricingTier>(
-                  value: PricingTier.normal,
-                  groupValue: orderViewModel.tier,
-                  onChanged: (PricingTier? value) {
-                    formFieldState.setValue(true);
-                    orderViewModel.onPriceTierChanged(value, formKey);
-                  },
-                ),
-                onTap: () {
-                  formFieldState.setValue(true);
-                  orderViewModel.onPriceTierChanged(
-                      PricingTier.normal, formKey);
-                },
-              ),
-              ListTile(
-                title: Text(PricingTier.advanced.name.capitalize()),
-                subtitle: Text(orderViewModel
-                    .getFormattedPriceString(PricingTier.advanced)),
-                leading: Radio<PricingTier>(
-                  value: PricingTier.advanced,
-                  groupValue: orderViewModel.tier,
-                  onChanged: (PricingTier? value) {
-                    formFieldState.setValue(true);
-                    orderViewModel.onPriceTierChanged(value, formKey);
-                  },
-                ),
-                onTap: () {
-                  formFieldState.setValue(true);
-                  orderViewModel.onPriceTierChanged(
-                      PricingTier.advanced, formKey);
-                },
+              Column(
+                children: PricingTier.values
+                    .map((PricingTier tier) => ListTile(
+                          title: Text(tier.name.capitalize()),
+                          subtitle: Text(
+                              orderViewModel.getFormattedPriceString(tier)),
+                          leading: Radio<PricingTier>(
+                            value: tier,
+                            groupValue: orderViewModel.tier,
+                            onChanged: (PricingTier? value) {
+                              formFieldState.setValue(true);
+                              orderViewModel.onPriceTierChanged(value, formKey);
+                            },
+                          ),
+                          onTap: () {
+                            formFieldState.setValue(true);
+                            orderViewModel.onPriceTierChanged(tier, formKey);
+                          },
+                        ))
+                    .toList(),
               ),
               if (formFieldState.hasError)
                 Text(
