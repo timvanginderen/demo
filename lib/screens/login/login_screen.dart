@@ -3,6 +3,7 @@ import 'package:demo/core/presentation/widgets/primary_button.dart';
 import 'package:demo/core/presentation/widgets/secondary_button.dart';
 import 'package:demo/core/utils/logger.dart';
 import 'package:demo/screens/login/login_view_model.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -58,8 +59,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   loginViewModel.goToOrderScreen();
                                 },
                                 text: 'Proceedix Enterprise',
-                                primaryIcon: Icons.cloud,
-                                secondaryIcon: Icons.play_arrow_rounded,
+                                primaryIcon: FluentIcons.cloud_24_filled,
+                                secondaryIcon:
+                                    FluentIcons.caret_right_24_filled,
                               ),
                               const SizedBox(height: 18.0),
                               PrimaryButton(
@@ -68,7 +70,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     logger.i('log in button pressed');
                                     loginViewModel.goToOrderScreen();
                                   },
-                                  primaryIcon: Icons.person_2_rounded),
+                                  primaryIcon:
+                                      FluentIcons.person_arrow_left_24_filled),
                             ],
                           ),
                         ),
