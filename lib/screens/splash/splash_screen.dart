@@ -30,7 +30,8 @@ class SplashScreen extends ConsumerWidget {
               ),
             ),
             const SafeArea(
-              child: Center(child: CircularProgressIndicator()),
+              child:
+                  Center(child: CircularProgressIndicator(color: Colors.white)),
             )
           ],
         ),
