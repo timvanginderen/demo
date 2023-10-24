@@ -20,11 +20,11 @@ extension LoadingViewModelExt on LoadingViewModelMixin {
     late Function listener;
     listener = () {
       if (!viewModel.isLoading) {
-        viewModel.removeListener(listener as Function());
+        viewModel.removeListener(listener as void Function());
         completer.complete();
       }
     };
-    viewModel.addListener(listener as Function());
+    viewModel.addListener(listener as void Function());
 
     return completer.future;
   }

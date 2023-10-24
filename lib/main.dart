@@ -8,6 +8,7 @@ import 'package:demo/core/utils/logger.dart';
 import 'package:demo/screens/app/app_view_model.dart';
 import 'package:demo/screens/home/home_screen.dart';
 import 'package:demo/screens/login/login_screen.dart';
+import 'package:demo/screens/order/order_screen.dart';
 import 'package:demo/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -58,6 +59,7 @@ class MyApp extends StatelessWidget {
     return <String, WidgetBuilder>{
       NavigationService.routeHome: (_) => const HomeScreen(),
       NavigationService.routeLogin: (_) => const LoginScreen(),
+      NavigationService.routeOrder: (_) => const OrderScreen(),
     };
   }
 }
