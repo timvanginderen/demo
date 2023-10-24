@@ -28,6 +28,7 @@ class DetailsStep extends StatelessWidget {
             onTapOutside: (PointerDownEvent event) =>
                 FocusManager.instance.primaryFocus?.unfocus(),
             textInputAction: TextInputAction.next,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
           TextFormField(
             decoration: const InputDecoration(labelText: 'Email Address'),
@@ -37,6 +38,7 @@ class DetailsStep extends StatelessWidget {
             onTapOutside: (PointerDownEvent event) =>
                 FocusManager.instance.primaryFocus?.unfocus(),
             textInputAction: TextInputAction.next,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 16.0),
